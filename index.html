@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>Get Started with deck.gl and Mapbox</title>
+    <script src="https://unpkg.com/deck.gl@^8.8.0/dist.min.js"></script>
+    <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />    
+  </head>
+
+  <body style="margin:0; width: 100vw; height: 100vh;"></body>
+
+  <script type="text/javascript">
+
+    const {DeckGL, ScatterplotLayer, TextLayer, HeatmapLayer} = deck;
+
+    new DeckGL({
+      mapStyle: 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json',
+      initialViewState: {
+        longitude: 4.40720776113367,
+        latitude: 51.21446231171585, 
+        zoom: 11,
+        maxZoom: 16
+      },
+      controller: true,
+      layers: [
+        new HeatmapLayer({
+            id: 'HeatmapLayer',
+            data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples.json',
+            /* props from HeatmapLayer class */
+            
+            // aggregation: 'SUM',
+            // colorDomain: null,
+            // colorRange: [[255, 255, 178], [254, 217, 118], [254, 178, 76], [253, 141, 60], [240, 59, 32], [189, 0, 38]],
+            // debounceTimeout: 500,
+            getPosition: (sample) => [sample[0], sample[1]],
+            getWeight: (sample) => sample[2],
+            // getWeight: 1,
+            intensity: 3,
+            radiusPixels: 15,
+            // threshold: 0.05,
+            // weightsTextureSize: 2048,
+            
+            /* props inherited from Layer class */
+            
+            // autoHighlight: false,
+            // coordinateOrigin: [0, 0, 0],
+            // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+            // highlightColor: [0, 0, 128, 128],
+            // modelMatrix: null,
+            // opacity: 1,
+            // pickable: false,
+            // visible: true,
+            // wrapLongitude: false,
+            })
+      ]
+    });
+
+  </script>
+</html>
