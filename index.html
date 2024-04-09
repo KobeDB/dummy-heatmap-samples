@@ -10,7 +10,90 @@
 
   <script type="text/javascript">
 
-    const {DeckGL, HeatmapLayer} = deck;
+    const {DeckGL, HeatmapLayer, ScatterplotLayer} = deck;
+
+    const heatmapLayer = new HeatmapLayer({
+        id: 'HeatmapLayer',
+        data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples.json',
+        /* props from HeatmapLayer class */
+
+        // aggregation: 'SUM',
+        // colorDomain: null,
+        // colorRange: [[255, 255, 178], [254, 217, 118], [254, 178, 76], [253, 141, 60], [240, 59, 32], [189, 0, 38]],
+        // debounceTimeout: 500,
+        getPosition: (sample) => [sample[0], sample[1]],
+        getWeight: (sample) => sample[2],
+        // getWeight: 1,
+        intensity: 3,
+        radiusPixels: 15,
+        // threshold: 0.05,
+        // weightsTextureSize: 2048,
+
+        /* props inherited from Layer class */
+
+        // autoHighlight: false,
+        // coordinateOrigin: [0, 0, 0],
+        // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+        // highlightColor: [0, 0, 128, 128],
+        // modelMatrix: null,
+        // opacity: 1,
+        // pickable: false,
+        // visible: true,
+        // wrapLongitude: false,
+        }
+    );
+
+  const scatterplotLayer = new ScatterplotLayer({
+    id: 'ScatterplotLayer',
+    data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples.json',
+    
+    /* props from ScatterplotLayer class */
+    
+    // antialiasing: true,
+    // billboard: false,
+    // filled: true,
+    getFillColor: [255, 140, 0],
+    getLineColor: [0, 0, 0],
+    // getLineWidth: 1,
+    getPosition: (sample) => [sample[0], sample[1]],
+    getRadius: d => (sample) => sample[2],
+    // lineWidthMaxPixels: Number.MAX_SAFE_INTEGER,
+    lineWidthMinPixels: 1,
+    // lineWidthScale: 1,
+    // lineWidthUnits: 'meters',
+    radiusMaxPixels: 100,
+    radiusMinPixels: 1,
+    radiusScale: 6,
+    // radiusUnits: 'meters',
+    stroked: false,
+
+    // onHover: ({object, x, y}) => {
+    //     const el = document.getElementById('tooltip');
+    //     if (object) {
+    //       const { lon, lat, weight } = object;
+    //       el.innerHTML = `<h1>Jam Info ${lon}, ${lat}</h1>`
+    //       el.style.display = 'block';
+    //       el.style.opacity = 0.9;
+    //       el.style.left = x + 'px';
+    //       el.style.top = y + 'px';
+    //     } else {
+    //       el.style.opacity = 0.0;
+    //     }
+    // },
+
+    
+    /* props inherited from Layer class */
+    
+    // autoHighlight: false,
+    // coordinateOrigin: [0, 0, 0],
+    // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+    // highlightColor: [0, 0, 128, 128],
+    // modelMatrix: null,
+    opacity: 0.1,
+    pickable: true,
+    visible: true,
+    // wrapLongitude: false,
+  });
 
     new DeckGL({
       mapStyle: 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json',
@@ -18,40 +101,19 @@
         longitude: 4.40720776113367,
         latitude: 51.21446231171585, 
         zoom: 11,
-        maxZoom: 16
+        maxZoom: 20
       },
       controller: true,
-      layers: [
-        new HeatmapLayer({
-            id: 'HeatmapLayer',
-            data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples.json',
-            /* props from HeatmapLayer class */
-            
-            // aggregation: 'SUM',
-            // colorDomain: null,
-            // colorRange: [[255, 255, 178], [254, 217, 118], [254, 178, 76], [253, 141, 60], [240, 59, 32], [189, 0, 38]],
-            // debounceTimeout: 500,
-            getPosition: (sample) => [sample[0], sample[1]],
-            getWeight: (sample) => sample[2],
-            // getWeight: 1,
-            intensity: 3,
-            radiusPixels: 15,
-            // threshold: 0.05,
-            // weightsTextureSize: 2048,
-            
-            /* props inherited from Layer class */
-            
-            // autoHighlight: false,
-            // coordinateOrigin: [0, 0, 0],
-            // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-            // highlightColor: [0, 0, 128, 128],
-            // modelMatrix: null,
-            // opacity: 1,
-            // pickable: false,
-            // visible: true,
-            // wrapLongitude: false,
-            })
-      ]
+      getTooltip: ({object}) => object && {
+      html: `<h1>Jam Info ${object[0]}, ${object[1]}</h1>`,
+      style: {
+        display: 'block',
+        fontSize: '0.8em',
+        padding: '5px',
+        opacity: 0.7,
+      } 
+    },
+      layers: [ heatmapLayer, scatterplotLayer ]
     });
 
   </script>
