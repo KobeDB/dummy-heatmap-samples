@@ -67,7 +67,7 @@
     radiusMaxPixels: 100,
     radiusMinPixels: 1,
     radiusScale: 6,
-    // radiusUnits: 'meters',
+    //radiusUnits: 'meters',
     stroked: false,
 
     // onHover: ({object, x, y}) => {
@@ -94,7 +94,7 @@
     // modelMatrix: null,
     opacity: 0.1,
     pickable: true,
-    onClick: ({sample, x, y}) => {
+    onClick: ({object, x, y}) => {
       // Create a new div element
       const divElement = document.createElement('div');
       const tooltipCanvas = document.createElement('canvas')
@@ -107,25 +107,28 @@
       divElement.style.top = '100px'; // adjust as needed
       divElement.style.left = '50px'; // adjust as needed
       divElement.style.backgroundColor = 'lightblue';
-      divElement.style.width = '200px';
+      divElement.style.width = '500px';
       divElement.style.height = '200px';
       divElement.style.padding = '5px';
       divElement.style.border = '1px solid black';
+
+      tooltipCanvas.width = 5000;
+      // tooltipCanvas.height = 300;
 
       // tooltipCanvas.width = divElement.width;
       // tooltipCanvas.height = divElement.height;
 
       const ctx = tooltipCanvas.getContext('2d');
 
-      const data = [10, 25, 15, 30, 20];
-      const barWidth = 40;
-      const barSpacing = 0;
+      const data = object.slice(3, 27);
+      const barWidth = 10;
+      const barSpacing = 10;
       const startX = 0;
       const startY = tooltipCanvas.height - 50;
   
       for (let i = 0; i < data.length; i++) {
           const x = startX + (barWidth + barSpacing) * i;
-          const height = data[i] * 5;
+          const height = data[i] * 20;
           ctx.fillStyle = 'blue';
           ctx.fillRect(x, startY - height, barWidth, height);
 
@@ -137,7 +140,9 @@
 
           // Add values on top of each bar
           ctx.fillStyle = 'black';
-          ctx.fillText(data[i].toString(), x + barWidth / 2, startY - height - 5);
+          if(data[i] > 0) {
+            ctx.fillText(data[i].toString(), x + barWidth / 2, startY - height - 5);
+          }
       }
 
       // Append the div to the body element
