@@ -121,6 +121,7 @@
       const ctx = tooltipCanvas.getContext('2d');
 
       const data = object.slice(3, 27);
+      const biggestWeight = Math.max(...data);
       const barWidth = 10;
       const barSpacing = 10;
       const startX = 0;
@@ -128,7 +129,7 @@
   
       for (let i = 0; i < data.length; i++) {
           const x = startX + (barWidth + barSpacing) * i;
-          const height = data[i] * 20;
+          const height = 80 * data[i] / biggestWeight;
           ctx.fillStyle = 'blue';
           ctx.fillRect(x, startY - height, barWidth, height);
 
