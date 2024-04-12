@@ -3,10 +3,13 @@
     <title>Get Started with deck.gl and Mapbox</title>
     <script src="https://unpkg.com/deck.gl@^8.8.0/dist.min.js"></script>
     <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
-    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />    
+    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
   </head>
 
   <body style="margin:0; width: 100vw; height: 100vh;"></body>
+
+  
+  <div id="tooltip"></div>
 
   <script type="text/javascript">
 
@@ -14,7 +17,7 @@
 
     const heatmapLayer = new HeatmapLayer({
         id: 'HeatmapLayer',
-        data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples.json',
+        data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples_hourly.json',
         /* props from HeatmapLayer class */
 
         // aggregation: 'SUM',
@@ -45,7 +48,7 @@
 
   const scatterplotLayer = new ScatterplotLayer({
     id: 'ScatterplotLayer',
-    data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples.json',
+    data: 'https://raw.githubusercontent.com/KobeDB/dummy-heatmap-samples/main/samples_hourly.json',
     
     /* props from ScatterplotLayer class */
     
@@ -91,6 +94,58 @@
     // modelMatrix: null,
     opacity: 0.1,
     pickable: true,
+    onClick: ({sample, x, y}) => {
+      // Create a new div element
+      const divElement = document.createElement('div');
+      const tooltipCanvas = document.createElement('canvas')
+
+      // Set the inner text of the div
+      divElement.innerText = 'Hello, World!';
+
+      // Set CSS properties for positioning
+      divElement.style.position = 'absolute'; // or 'relative' if you prefer
+      divElement.style.top = '100px'; // adjust as needed
+      divElement.style.left = '50px'; // adjust as needed
+      divElement.style.backgroundColor = 'lightblue';
+      divElement.style.width = '200px';
+      divElement.style.height = '200px';
+      divElement.style.padding = '5px';
+      divElement.style.border = '1px solid black';
+
+      // tooltipCanvas.width = divElement.width;
+      // tooltipCanvas.height = divElement.height;
+
+      const ctx = tooltipCanvas.getContext('2d');
+
+      const data = [10, 25, 15, 30, 20];
+      const barWidth = 40;
+      const barSpacing = 0;
+      const startX = 0;
+      const startY = tooltipCanvas.height - 50;
+  
+      for (let i = 0; i < data.length; i++) {
+          const x = startX + (barWidth + barSpacing) * i;
+          const height = data[i] * 5;
+          ctx.fillStyle = 'blue';
+          ctx.fillRect(x, startY - height, barWidth, height);
+
+          // Add labels below each bar
+          ctx.fillStyle = 'black';
+          ctx.font = '12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(i, x, startY + 20);
+
+          // Add values on top of each bar
+          ctx.fillStyle = 'black';
+          ctx.fillText(data[i].toString(), x + barWidth / 2, startY - height - 5);
+      }
+
+      // Append the div to the body element
+      document.body.appendChild(divElement);
+      divElement.appendChild(tooltipCanvas);
+
+      
+    },
     visible: true,
     // wrapLongitude: false,
   });
@@ -104,15 +159,6 @@
         maxZoom: 20
       },
       controller: true,
-      getTooltip: ({object}) => object && {
-      html: `<h1>Jam Info ${object[0]}, ${object[1]}</h1>`,
-      style: {
-        display: 'block',
-        fontSize: '0.8em',
-        padding: '5px',
-        opacity: 0.7,
-      } 
-    },
       layers: [ heatmapLayer, scatterplotLayer ]
     });
 
